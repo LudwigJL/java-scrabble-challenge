@@ -1,12 +1,16 @@
 package com.booleanuk;
 
 import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class Scrabble {
     HashMap<Character, Integer> letterValues = new HashMap<>();
+    Stack<Character> multiplierStack = new Stack<>();
     Boolean isDouble = false;
     Boolean isTriple = false;
+    Boolean validGame = true;
 
     int score = 0;
 
@@ -18,8 +22,8 @@ public class Scrabble {
     }
 
     public void recur(String s) {
-        if (s.equals("")) {
 
+        if (s.equals("")) {
             if (isTriple || isDouble){
                 this.score = 0;
                 System.out.println("Score: " + score);
@@ -28,25 +32,39 @@ public class Scrabble {
                 System.out.println("Score: " + score);
             }
         }
-
         else if (!letterValues.containsKey(s.charAt(0))){
             this.score = 0;
             System.out.println("Score: " + score);
         }
 
+
         else {
-            if (s.charAt(0) == '[') {
+            char currentChar = s.charAt(0);
+            if (currentChar == '[' ) {
+                multiplierStack.push(currentChar);
                 isTriple = true;
             }
-            if (s.charAt(0) == ']') {
 
+            if (currentChar == '{' ) {
+                multiplierStack.push(currentChar);
+                isDouble = true;
+            }
+
+            if (currentChar == ']' ) {
+                if (multiplierStack.isEmpty() || !isMatchingBracket(multiplierStack.pop(), currentChar)) {
+                    validGame = false;
+                    System.out.println("Not valid");
+                    return;
+                }
                 isTriple = false;
             }
 
-            if (s.charAt(0) == '{') {
-                isDouble = true;
-            }
-            if (s.charAt(0) == '}') {
+            if (currentChar == '}' ) {
+                if (multiplierStack.isEmpty() || !isMatchingBracket(multiplierStack.pop(), currentChar)) {
+                    validGame = false;
+                    System.out.println("Not valid");
+                    return;
+                }
                 isDouble = false;
             }
 
@@ -67,6 +85,11 @@ public class Scrabble {
 
             recur (s.substring(1));
         }
+    }
+    private boolean isMatchingBracket(char open, char close) {
+
+        return (open == '{' && close == '}') || (open == '[' && close == ']');
+
     }
 
     public void setLetterValues(){
