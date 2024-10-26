@@ -18,13 +18,16 @@ public class Scrabble {
     public Scrabble(String word) {
         setLetterValues();
         word = word.toUpperCase();
+        validGame = isMultiLetterTriples(word);
+        validGame = isMultiLetterDoubles(word);
+
         recur(word);
     }
 
     public void recur(String s) {
 
         if (s.equals("")) {
-            if (isTriple || isDouble){
+            if (isTriple || isDouble || !validGame){
                 this.score = 0;
                 System.out.println("Score: " + score);
             }
@@ -33,10 +36,8 @@ public class Scrabble {
             }
         }
         else if (!letterValues.containsKey(s.charAt(0))){
-            this.score = 0;
-            System.out.println("Score: " + score);
+            validGame = false;
         }
-
 
         else {
             char currentChar = s.charAt(0);
@@ -54,7 +55,6 @@ public class Scrabble {
                 if (multiplierStack.isEmpty() || !isMatchingBracket(multiplierStack.pop(), currentChar)) {
                     validGame = false;
                     System.out.println("Not valid");
-                    return;
                 }
                 isTriple = false;
             }
@@ -63,7 +63,6 @@ public class Scrabble {
                 if (multiplierStack.isEmpty() || !isMatchingBracket(multiplierStack.pop(), currentChar)) {
                     validGame = false;
                     System.out.println("Not valid");
-                    return;
                 }
                 isDouble = false;
             }
@@ -90,6 +89,26 @@ public class Scrabble {
 
         return (open == '{' && close == '}') || (open == '[' && close == ']');
 
+    }
+
+    private boolean isMultiLetterDoubles (String word) {
+        int openingIndex = word.indexOf('{');
+        int closingIndex = word.indexOf('}');
+
+        if (openingIndex > 0 && closingIndex - openingIndex > 2) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isMultiLetterTriples (String word) {
+        int openingIndex = word.indexOf('[');
+        int closingIndex = word.indexOf(']');
+
+        if (openingIndex > 0 && closingIndex - openingIndex > 2) {
+            return false;
+        }
+        return true;
     }
 
     public void setLetterValues(){
