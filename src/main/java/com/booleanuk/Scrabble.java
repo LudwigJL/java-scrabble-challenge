@@ -52,7 +52,10 @@ public class Scrabble {
 
             int currScore = getValue(s.charAt(0));
 
-            if (isTriple){
+            if(isTriple && isDouble){
+                this.score += currScore * 3 * 2;
+            }
+            else if (isTriple){
                 this.score += currScore * 3;
             } else if (isDouble) {
                 this.score += currScore * 2;
