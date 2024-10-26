@@ -6,3 +6,7 @@ public static void main(String[] args) {
     Scrabble scrabble = new Scrabble(word);
     }
 }
+
+
+
+

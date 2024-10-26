@@ -19,7 +19,8 @@ public class Scrabble {
 
     public void recur(String s) {
         if (s.equals("")) {
-            if (isTriple){
+
+            if (isTriple || isDouble){
                 this.score = 0;
                 System.out.println("Score: " + score);
             }
@@ -38,15 +39,28 @@ public class Scrabble {
                 isTriple = true;
             }
             if (s.charAt(0) == ']') {
+
                 isTriple = false;
             }
+
+            if (s.charAt(0) == '{') {
+                isDouble = true;
+            }
+            if (s.charAt(0) == '}') {
+                isDouble = false;
+            }
+
             int currScore = getValue(s.charAt(0));
 
             if (isTriple){
                 this.score += currScore * 3;
+            } else if (isDouble) {
+                this.score += currScore * 2;
+
             } else {
                 this.score += currScore;
             }
+
 
             recur (s.substring(1));
         }
